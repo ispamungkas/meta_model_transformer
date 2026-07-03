@@ -60,12 +60,6 @@ class ClassGuard {
     Element? element,
   }) {
     switch (baseMetaCount) {
-      case 0:
-        throw InvalidGenerationSource(
-          'You must use @MetaUse at least once',
-          todo: 'Add $requiredVariableName to constructor',
-          element: element,
-        );
       case > 1:
         throw InvalidGenerationSource(
           'You can not use @MetaUse more than once',

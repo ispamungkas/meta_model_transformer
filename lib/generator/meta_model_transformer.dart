@@ -116,6 +116,10 @@ class SingleFileAggregateBuilder extends Builder {
       ),
     );
 
+    if (checkMetaCount == 0) {
+      return;
+    }
+
     // Write to file
     final output = AssetId(
       buildStep.inputId.package,
