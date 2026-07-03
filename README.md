@@ -14,14 +14,17 @@ Instead of manually calling each model's `fromJson()` method, this package gener
 
 ## Getting started
 
-Add the package to your project.
+Add the package to your project by referencing a tagged release from GitHub.
 
 ```yaml
 dependencies:
-  meta_model_transformer: ^latest_version
+  meta_model_transformer:
+    git:
+      url: https://github.com/<username>/meta_model_transformer.git
+      ref: v1.0.0-beta.1
 
 dev_dependencies:
-  build_runner: ^latest_version
+  build_runner: ^2.5.4
 ```
 
 Run code generation:
