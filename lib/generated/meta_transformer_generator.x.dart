@@ -14,20 +14,47 @@ import '../example/isi.dart';
 import '../example/sample.dart';
 import '../example/usu.dart';
 
-extension IsiToObj<T> on Isi<T> {
-  Map<String, dynamic Function()> _registry() => {
+typedef jsonParser = dynamic Function(dynamic);
 
-    // Registry List<T> object
-    '_Samplelst' : () => (data as List?)?.map((e) => Sample.fromJson(e as Map<String, dynamic>)).toList(),
-    '_Sample2lst' : () => (data as List?)?.map((e) => Sample2.fromJson(e as Map<String, dynamic>)).toList(),
-    '_Usulst' : () => (data as List?)?.map((e) => Usu.fromJson(e as Map<String, dynamic>)).toList(),
+class _$MetaModelTransformer {
+  static Map<String, jsonParser> registry = {
 
-    // Registry <T> object
-    '_Sample' : () =>  Sample.fromJson(data),
-    '_Sample2' : () =>  Sample2.fromJson(data),
-    '_Usu' : () =>  Usu.fromJson(data),
+    // Registry for parsing List<T> objects.
+    //
+    // Stores parser functions for each registered model that transform
+    // a JSON array into a strongly typed List<T>. Parsers are executed
+    // lazily, meaning only the parser matching the requested generic
+    // type is invoked.
+    '_Samplelst' : (data) => (data as List?)?.map((e) => Sample.fromJson(e as Map<String, dynamic>)).toList(),
+    '_Sample2lst' : (data) => (data as List?)?.map((e) => Sample2.fromJson(e as Map<String, dynamic>)).toList(),
+    '_Usulst' : (data) => (data as List?)?.map((e) => Usu.fromJson(e as Map<String, dynamic>)).toList(),
+
+    // Registry for parsing single objects [T].
+    //
+    // Stores parser functions for each registered model that convert
+    // a JSON object [Map<String, dynamic>] into its corresponding
+    // strongly typed model instance. The parser is selected based on
+    // the requested generic type and is executed only when getData()
+    // is called.
+    '_Sample' : (data) =>  Sample.fromJson(data),
+    '_Sample2' : (data) =>  Sample2.fromJson(data),
+    '_Usu' : (data) =>  Usu.fromJson(data),
 
   };
+}
+/// Converts the raw JSON data into the requested generic type `T`.
+///
+/// This method automatically resolves the appropriate parser from the
+/// generated registry based on the generic type provided.
+///
+/// Supported conversions:
+/// - [Map<String, dynamic>] → [T]
+/// - [List<dynamic>] → [List<T>]
+///
+/// Throws an [Exception] if:
+/// - The raw data is neither a `Map` nor a `List`.
+/// - No parser is registered for the requested generic type.
+extension IsiToObj<T> on Isi<T> {
 
   T getData() {
     // Prevent data doesn't containt [Map, List]
@@ -46,15 +73,13 @@ extension IsiToObj<T> on Isi<T> {
 
     final String key = isList ? '_${dataType}lst' : '_$dataType';
 
-    final parser = _registry()[key];
+    final parser = _$MetaModelTransformer.registry[key];
 
     if (parser == null) {
       throw Exception('Unsupported type');
     }
 
-    return parser() as T;
+    return parser(data) as T;
 
   }
 }
-
-

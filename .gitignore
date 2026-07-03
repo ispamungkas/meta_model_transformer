@@ -34,4 +34,4 @@ migrate_working_dir/
 .fvm/
 
 # Avoid generator ouputs
-*.t.dart
+*.x.dart

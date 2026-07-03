@@ -5,15 +5,19 @@ StringBuffer writeExtension({
 }) {
   final StringBuffer ext = StringBuffer();
   ext.write('''
-
+/// Converts the raw JSON data into the requested generic type [T].
+///
+/// This method automatically resolves the appropriate parser from the
+/// generated registry based on the generic type provided.
+///
+/// Supported conversions:
+/// - [Map<String, dynamic>] → [T]
+/// - [List<dynamic>] → [List<T>]
+///
+/// Throws an [Exception] if:
+/// - The raw data is neither a `Map` nor a `List`.
+/// - No parser is registered for the requested generic type.
 extension ${baseClass}ToObj<T> on $baseClass<T> {
-  Map<String, dynamic Function()> _registry() => {
-
-    // Registry List<T> object
-${writeListOutputData(registry, fieldName)}
-    // Registry <T> object
-${writeOutputData(registry, fieldName)}
-  };
 
   T getData() {
     // Prevent data doesn't containt [Map, List]
@@ -32,18 +36,16 @@ ${writeOutputData(registry, fieldName)}
 
     final String key = isList ? '_\${dataType}lst' : '_\$dataType';
 
-    final parser = _registry()[key];
+    final parser = _\$MetaModelTransformer.registry[key];
 
     if (parser == null) {
       throw Exception('Unsupported type');
     }
 
-    return parser() as T;
+    return parser(data) as T;
 
   }
-}
-
-''');
+}''');
 
   return ext;
 }
@@ -52,7 +54,7 @@ String writeOutputData(List<Object> registry, String baseDataName) {
   final StringBuffer listBaseBuffer = StringBuffer();
   for (final Object data in registry) {
     listBaseBuffer.write('''
-    '_${data.toString()}' : () =>  $data.fromJson($baseDataName),
+    '_${data.toString()}' : (data) =>  $data.fromJson(data),
 ''');
   }
 
@@ -63,7 +65,7 @@ String writeListOutputData(List<Object> registry, String baseDataName) {
   final StringBuffer listBaseBuffer = StringBuffer();
   for (final Object data in registry) {
     listBaseBuffer.write('''
-    '_${data.toString()}lst' : () => ($baseDataName as List?)?.map((e) => $data.fromJson(e as Map<String, dynamic>)).toList(),
+    '_${data.toString()}lst' : (data) => (data as List?)?.map((e) => $data.fromJson(e as Map<String, dynamic>)).toList(),
 ''');
   }
 

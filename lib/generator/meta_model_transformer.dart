@@ -53,7 +53,7 @@ class SingleFileAggregateBuilder extends Builder {
 ''');
 
     // Generated import
-    final String writePart = await _generatePart(assets, buildStep: buildStep);
+    final String writePart = await _generateImport(assets, buildStep: buildStep);
     buffer.write(writePart);
     
     for (final AssetId file in assets) {
@@ -92,14 +92,15 @@ class SingleFileAggregateBuilder extends Builder {
       }
     }
 
-    // Write registry
-    buffer.writeln(writeExtension(
+    // Generator
+    buffer.write(await _writeGeneratorClass());
+
+    // Write extension
+    buffer.write(writeExtension(
       baseClass: baseFileName,
       registry: registry,
       fieldName: fieldMetaValue,
     ));
-
-    // Write extension
     
     // Write to file
     final output = AssetId(
@@ -162,7 +163,7 @@ class SingleFileAggregateBuilder extends Builder {
     }
   }
 
-  Future<String> _generatePart(
+  Future<String> _generateImport(
     Iterable<AssetId> assets, {
     required BuildStep buildStep,
   }) async {
@@ -198,5 +199,36 @@ class SingleFileAggregateBuilder extends Builder {
     }
 
     return partBuffer.toString();
+  }
+
+  Future<StringBuffer> _writeGeneratorClass() async{
+    final StringBuffer buffer = StringBuffer();
+
+    buffer.writeln('''
+
+typedef jsonParser = dynamic Function(dynamic);
+
+class _\$MetaModelTransformer {
+  static Map<String, jsonParser> registry = {
+
+    // Registry for parsing List<T> objects.
+    //
+    // Stores parser functions for each registered model that transform
+    // a JSON array into a strongly typed List<T>. Parsers are executed
+    // lazily, meaning only the parser matching the requested generic
+    // type is invoked.
+${writeListOutputData(registry, fieldMetaValue)}
+    // Registry for parsing single objects [T].
+    //
+    // Stores parser functions for each registered model that convert
+    // a JSON object [Map<String, dynamic>] into its corresponding
+    // strongly typed model instance. The parser is selected based on
+    // the requested generic type and is executed only when getData()
+    // is called.
+${writeOutputData(registry, fieldMetaValue)}
+  };
+}''');
+
+    return buffer;
   }
 }
