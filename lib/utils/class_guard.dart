@@ -1,6 +1,5 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
-import 'package:meta_model_transformer/meta/meta.dart';
 import 'package:source_gen/source_gen.dart';
 
 class ClassGuard {
@@ -55,5 +54,24 @@ class ClassGuard {
     return true;
   }
 
-  final MetaUse data = MetaUse(field: 'data');
+  static void preventSomeConditionUsingMetaUseAnnotation({
+    required String requiredVariableName,
+    required int baseMetaCount,
+    Element? element,
+  }) {
+    switch (baseMetaCount) {
+      case 0:
+        throw InvalidGenerationSource(
+          'You must use @MetaUse at least once',
+          todo: 'Add $requiredVariableName to constructor',
+          element: element,
+        );
+      case > 1:
+        throw InvalidGenerationSource(
+          'You can not use @MetaUse more than once',
+          todo: 'Just select one @MetaUse annotation and remove the others',
+          element: element,
+        );
+    }
+  }
 }

@@ -42,7 +42,7 @@ class _$MetaModelTransformer {
 
   };
 }
-/// Converts the raw JSON data into the requested generic type `T`.
+/// Converts the raw JSON data into the requested generic type [T].
 ///
 /// This method automatically resolves the appropriate parser from the
 /// generated registry based on the generic type provided.
@@ -54,7 +54,7 @@ class _$MetaModelTransformer {
 /// Throws an [Exception] if:
 /// - The raw data is neither a `Map` nor a `List`.
 /// - No parser is registered for the requested generic type.
-extension IsiToObj<T> on Isi<T> {
+extension AcaToObj<T> on Aca<T> {
 
   T getData() {
     // Prevent data doesn't containt [Map, List]

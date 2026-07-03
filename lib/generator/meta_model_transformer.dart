@@ -16,8 +16,11 @@ class SingleFileAggregateBuilder extends Builder {
   // with extension [.x.dart]
   String baseFileName = '';
 
-  // Base class meta count
-  int baseMetaCount = 0;
+  // Flag to check base class type
+  bool baseClassTypeIsAbstract = false;
+
+  // Counter meta
+  int checkMetaCount = 0;
 
   // Field meta value
   String fieldMetaValue = '';
@@ -53,9 +56,12 @@ class SingleFileAggregateBuilder extends Builder {
 ''');
 
     // Generated import
-    final String writePart = await _generateImport(assets, buildStep: buildStep);
+    final String writePart = await _generateImport(
+      assets,
+      buildStep: buildStep,
+    );
     buffer.write(writePart);
-    
+
     for (final AssetId file in assets) {
       // Guarding data
       // continue to next loop if data is not valid
@@ -92,16 +98,24 @@ class SingleFileAggregateBuilder extends Builder {
       }
     }
 
+    // Prevent generator when `MetaUse` annotation not found
+    ClassGuard.preventSomeConditionUsingMetaUseAnnotation(
+      requiredVariableName: fieldMetaValue,
+      baseMetaCount: checkMetaCount,
+    );
+
     // Generator
     buffer.write(await _writeGeneratorClass());
 
     // Write extension
-    buffer.write(writeExtension(
-      baseClass: baseFileName,
-      registry: registry,
-      fieldName: fieldMetaValue,
-    ));
-    
+    buffer.write(
+      writeExtension(
+        baseClass: baseFileName,
+        registry: registry,
+        fieldName: fieldMetaValue,
+      ),
+    );
+
     // Write to file
     final output = AssetId(
       buildStep.inputId.package,
@@ -134,30 +148,40 @@ class SingleFileAggregateBuilder extends Builder {
       buildStep: buildStep,
     );
 
-    if (!metaBaseIsEmpty) {
-      final AnnotatedElement firstAnnotation = dataMetaBase.first;
+    for (AnnotatedElement annotation in dataMetaBase) {
+      checkMetaCount++;
+
+      final ClassElement classElement = annotation.element as ClassElement;
 
       // Change name generator
-      baseFileName = firstAnnotation.element.name ?? '';
-
-      // Add counter
-      baseMetaCount++;
+      baseFileName = annotation.element.name ?? '';
 
       // Set field value
-      fieldMetaValue =
-          firstAnnotation.annotation.peek('field')?.stringValue ?? '';
+      fieldMetaValue = annotation.annotation.peek('field')?.stringValue ?? '';
+
+      // Check class type
+      if (classElement.isAbstract) {
+        baseClassTypeIsAbstract = true;
+        for (var e in classElement.constructors) {
+          if (e.formalParameters.isEmpty) {
+            throw InvalidGenerationSource(
+              'Constructor must have [$annotation as dynamic]',
+              todo:
+                  'Add field $fieldMetaValue into constuctor parameter as dynamic',
+              element: annotation.element,
+            );
+          }
+        }
+      }
 
       // Precent consumer has a field
-      if (!ClassGuard.isClassHasField(
-        fieldMetaValue,
-        data: firstAnnotation.element as ClassElement,
-      )) {
+      if (!ClassGuard.isClassHasField(fieldMetaValue, data: classElement)) {
         // Throw exception
         throw InvalidGenerationSource(
-          'Field $fieldMetaValue not found in ${firstAnnotation.element.name}',
+          'Field $fieldMetaValue not found in ${annotation.element.name}',
           todo:
-              'Add field $fieldMetaValue into ${firstAnnotation.element.name} as Map<String, dynamic>',
-          element: firstAnnotation.element,
+              'Add field $fieldMetaValue into ${annotation.element.name} as Map<String, dynamic>',
+          element: annotation.element,
         );
       }
     }
@@ -201,7 +225,7 @@ class SingleFileAggregateBuilder extends Builder {
     return partBuffer.toString();
   }
 
-  Future<StringBuffer> _writeGeneratorClass() async{
+  Future<StringBuffer> _writeGeneratorClass() async {
     final StringBuffer buffer = StringBuffer();
 
     buffer.writeln('''

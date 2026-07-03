@@ -20,7 +20,7 @@ void main() {
         ];
         
         // Inisialisasi objek Isi dengan generic tipe berupa List<Sample>
-        final isiContainer = Isi<List<Sample>>(data: mockRawData);
+        final isiContainer = Aca<List<Sample>>(data: mockRawData);
         
         // Eksekusi fungsi extension
         final result = isiContainer.getData();
@@ -35,7 +35,7 @@ void main() {
           {'name': 'Ucup'}
         ];
         
-        final isiContainer = Isi<List<Usu>>(data: mockRawData);
+        final isiContainer = Aca<List<Usu>>(data: mockRawData);
         final result = isiContainer.getData();
         
         expect(result, isA<List<Usu>>());
@@ -52,7 +52,7 @@ void main() {
         final mockRawData = {'key': 'value'};
         
         // Inisialisasi objek Isi dengan generic tipe berupa Sample2 tunggal
-        final isiContainer = Isi<Sample2>(data: mockRawData);
+        final isiContainer = Aca<Sample2>(data: mockRawData);
         
         // Eksekusi fungsi extension
         final result = isiContainer.getData();
@@ -64,7 +64,7 @@ void main() {
       test('Harus sukses mengembalikan objek tunggal Usu ketika data berupa Map', () {
         final mockRawData = {'status': 'success'};
         
-        final isiContainer = Isi<Usu>(data: mockRawData);
+        final isiContainer = Aca<Usu>(data: mockRawData);
         final result = isiContainer.getData();
         
         expect(result, isA<Usu>());
@@ -77,7 +77,7 @@ void main() {
     group('Edge Cases & Error Scenarios', () {
       test('Harus melempar Exception ketika tipe data tidak didukung (misal: String)', () {
         // Input berupa String biasa, yang mana tidak masuk kriteria List atau Map di switch
-        final isiContainer = Isi<Sample>(data: 'Ini data teks sembarangan');
+        final isiContainer = Aca<Sample>(data: 'Ini data teks sembarangan');
         
         // Asersi memastikan fungsi melempar Exception 'Unsupported type'
         expect(
@@ -95,7 +95,7 @@ void main() {
         
         // Mengisi kelas yang tidak terdaftar di blok generator _registry() Anda
         // Misal kita menggunakan tipe Int karena Int tidak ada di '_registry()' Anda
-        final isiContainer = Isi<int>(data: mockRawData);
+        final isiContainer = Aca<int>(data: mockRawData);
         
         // Karena _registry()['_int'] mengembalikan null, melakukan 'as int' pada null akan memicu error
         expect(
