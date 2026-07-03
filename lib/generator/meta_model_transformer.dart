@@ -121,12 +121,13 @@ class SingleFileAggregateBuilder extends Builder {
     }
 
     // Write to file
-    final output = AssetId(
-      buildStep.inputId.package,
-      'lib/generated/meta_transformer_generator.x.dart',
-    );
-    await buildStep.writeAsString(output, buffer.toString());
-
+    if (checkMetaCount != 0) {
+      final output = AssetId(
+        buildStep.inputId.package,
+        'lib/generated/meta_transformer_generator.x.dart',
+      );
+      await buildStep.writeAsString(output, buffer.toString());
+    }
     _hasRun = false;
   }
 
