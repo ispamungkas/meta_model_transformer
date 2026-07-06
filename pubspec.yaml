@@ -1,6 +1,6 @@
 name: meta_model_transformer
 description: "A Meta model transformer"
-version: 1.0.0-beta.1
+version: 1.0.0-beta.2
 repository: https://github.com/ispamungkas/meta_model_transformer.git
 homepage: https://github.com/ispamungkas/meta_model_transformer.git
 issue_tracker: https://github.com/ispamungkas/meta_model_transformer/issues
