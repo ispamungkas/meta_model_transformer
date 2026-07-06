@@ -1,3 +1,8 @@
+## 1.0.0-beta.2
+
+- Change generated file location from `lib/generated` to `global/model/generated`
+- Adjustment compability with `freezed`
+
 ## 1.0.0-beta.1
 
 - Initial beta release.

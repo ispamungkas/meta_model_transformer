@@ -35,3 +35,6 @@ migrate_working_dir/
 
 # Avoid generator ouputs
 *.x.dart
+
+# Avoid folder example
+lib/example/

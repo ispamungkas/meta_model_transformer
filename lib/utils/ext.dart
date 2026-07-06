@@ -34,12 +34,14 @@ extension ${baseClass}ToObj<T> on $baseClass<T> {
       dataType = dataType.substring(5, dataType.length - 1);
     }
 
+    dataType = dataType.replaceAll(RegExp(r'<dynamic>'), '');
+
     final String key = isList ? '_\${dataType}lst' : '_\$dataType';
 
-    final parser = _\$MetaModelTransformer.registry[key];
+    final parser = _\$MetaModelTransformer.parseClosure[key];
 
     if (parser == null) {
-      throw Exception('Unsupported type');
+      throw Exception('\${T.toString()} class not registered, please add @Transform() on \${T.toString()} class');
     }
 
     return parser(data) as T;

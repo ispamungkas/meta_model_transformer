@@ -21,10 +21,13 @@ dependencies:
   meta_model_transformer:
     git:
       url: https://github.com/ispamungkas/meta_model_transformer.git
-      ref: v1.0.0-beta.1
+      ref: ^latest_version
 
 dev_dependencies:
-  build_runner: ^2.5.4
+  meta_model_transformer:
+      git:
+        url: https://github.com/ispamungkas/meta_model_transformer.git
+        ref: ^latest_version
 ```
 
 Run code generation:
@@ -55,10 +58,37 @@ The `field` parameter specifies which property contains the raw JSON that will b
 
 ```dart
 @MetaUse(field: 'data')
-class Isi<T> {
-  const Isi({this.data});
+class Isi<T>{
+  const Isi({
+    required dynamic data,
+    required int code,
+    required String message,
+  });
 
   final dynamic data;
+}
+```
+Using a `freezed` plugin
+```dart
+@freezed
+@MetaUse(field: 'data')
+abstract class Isi<T> with _$Isi{
+  const factory Isi({
+    @JsonKey(name: 'data')
+    required dynamic data,
+    @JsonKey(name: 'code')
+    required int code,
+    @JsonKey(name: 'message')
+    required String message,
+  }) = _Isi;
+
+  // Must be added
+  //
+  // For bypass variable [data] on _$Isi
+  @override
+  dynamic get data;
+
+  factory Isi.fromJson(Map<String, dynamic> json) => _$IsiFromJson(json);
 }
 ```
 
@@ -77,26 +107,34 @@ class Isi<T> {
 Annotate every model that should be included in the generated parser registry.
 
 ```dart
+@freezed
 @Transform()
-class Sample {
-  Sample();
+abstract class Sample with _$Sample {
+  
+  const factory Sample({
+    @JsonKey(name: 'sample_more')
+    required String sampleMore,
+  }) = _Sample;
 
-  factory Sample.fromJson(Map<String, dynamic>? json) {
-    return Sample();
-  }
+
+  factory Sample.fromJson(Map<String, dynamic> json) => _$Sample(json);
 }
 ```
 
 Multiple models are supported.
 
 ```dart
+@freezed
 @Transform()
-class Sample2 {
-  Sample2();
+abstract class Sample2 with _$Sample2 {
+  
+  const factory Sample2({
+    @JsonKey(name: 'sample2_more')
+    required String sample2More,
+  }) = _Sample2;
 
-  factory Sample2.fromJson(Map<String, dynamic>? json) {
-    return Sample2();
-  }
+
+  factory Sample2.fromJson(Map<String, dynamic> json) => _$Sample2(json);
 }
 ```
 
