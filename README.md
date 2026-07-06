@@ -18,10 +18,16 @@ Add the package to your project.
 
 ```yaml
 dependencies:
-  meta_model_transformer: ^latest_version
+  meta_model_transformer:
+    git:
+      url: https://github.com/ispamungkas/meta_model_transformer.git
+      ref: ^latest_version
 
 dev_dependencies:
-  build_runner: ^latest_version
+  meta_model_transformer:
+      git:
+        url: https://github.com/ispamungkas/meta_model_transformer.git
+        ref: ^latest_version
 ```
 
 Run code generation:

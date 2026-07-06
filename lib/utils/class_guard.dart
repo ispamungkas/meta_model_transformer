@@ -3,6 +3,7 @@ import 'package:build/build.dart';
 import 'package:source_gen/source_gen.dart';
 
 class ClassGuard {
+  ClassGuard._();
   static bool isClassHasField(String fieldName, {required ClassElement data}) {
     for (final FieldElement field in data.fields) {
       if (field.name == null || field.name == '') return false;
