@@ -124,7 +124,7 @@ class SingleFileAggregateBuilder extends Builder {
     if (checkMetaCount != 0) {
       final output = AssetId(
         buildStep.inputId.package,
-        'lib/generated/meta_transformer_generator.x.dart',
+        'lib/global/model/generated/meta_transformer_generator.x.dart',
       );
       await buildStep.writeAsString(output, buffer.toString());
     }
@@ -133,7 +133,7 @@ class SingleFileAggregateBuilder extends Builder {
 
   @override
   Map<String, List<String>> get buildExtensions => {
-    r'$lib$': ['generated/meta_transformer_generator.x.dart'],
+    r'$lib$': ['global/model/generated/meta_transformer_generator.x.dart'],
   };
 
   /// Setup base meta model transform
@@ -223,7 +223,7 @@ class SingleFileAggregateBuilder extends Builder {
       final String filePath = file.path.substring(4);
 
       if (!metaUseIsEmpty || !transformIsEmpty) {
-        partBuffer.writeln('import \'../$filePath\';');
+        partBuffer.writeln('import \'../../../$filePath\';');
       }
     }
 

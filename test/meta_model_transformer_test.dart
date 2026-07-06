@@ -2,8 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:meta_model_transformer/example/isi.dart';
 import 'package:meta_model_transformer/example/sample.dart';
 import 'package:meta_model_transformer/example/usu.dart';
-import 'package:meta_model_transformer/generated/meta_transformer_generator.x.dart';
-// Sesuaikan path import ini dengan struktur folder proyek Anda
+import 'package:meta_model_transformer/global/model/generated/meta_transformer_generator.x.dart';
 
 void main() {
   group('IsiToObj Extension Test Scenarios', () {
