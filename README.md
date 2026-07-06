@@ -14,7 +14,7 @@ Instead of manually calling each model's `fromJson()` method, this package gener
 
 ## Getting started
 
-Add the package to your project.
+Add the package to your project by referencing a tagged release from GitHub.
 
 ```yaml
 dependencies:
