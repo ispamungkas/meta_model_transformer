@@ -238,7 +238,7 @@ class SingleFileAggregateBuilder extends Builder {
 typedef jsonParser = dynamic Function(dynamic);
 
 class _\$MetaModelTransformer {
-  static Map<String, jsonParser> registry = {
+  static Map<String, jsonParser> parseClosure = {
 
     // Registry for parsing List<T> objects.
     //
