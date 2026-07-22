@@ -1,0 +1,25 @@
+name: model_parser
+description: "A model parser"
+version: 1.0.0-beta.3
+repository: https://github.com/ispamungkas/meta_model_transformer.git
+homepage: https://github.com/ispamungkas/meta_model_transformer.git
+issue_tracker: https://github.com/ispamungkas/meta_model_transformer/issues
+
+resolution: workspace
+
+environment:
+  sdk: ^3.10.0-290.4.beta
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  analyzer: any
+  build: any
+  source_gen: any
+  glob: any
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  build_runner: any

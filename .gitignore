@@ -37,4 +37,10 @@ migrate_working_dir/
 *.x.dart
 
 # Avoid folder example
-lib/example/
+model_parser/lib/example/
+
+# Avoid generated code
+model_parser/global/model/generated/
+
+# Hide folder vscode
+.vscode/

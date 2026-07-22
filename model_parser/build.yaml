@@ -1,0 +1,15 @@
+targets:
+  $default:
+    builders:
+      model_parser|to_string:
+        enabled: true
+
+builders:
+  to_string:
+    import: 'package:model_parser/generator/meta_model_parser.dart'
+    builder_factories: ["toStringBuilder"]
+    build_extensions: {r"$lib$": ["model_parser/global/model/generated/meta_model_parser_generator.x.dart"]}
+    # build_extensions: {".dart": [".x.dart"]}
+    auto_apply: dependents
+    build_to: source
+    # applies_builders: ["source_gen:combinign_builder"]

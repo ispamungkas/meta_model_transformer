@@ -1,9 +1,13 @@
 name: meta_model_transformer
 description: "A Meta model transformer"
-version: 1.0.0-beta.1
+version: 1.0.0-beta.3
 repository: https://github.com/ispamungkas/meta_model_transformer.git
 homepage: https://github.com/ispamungkas/meta_model_transformer.git
 issue_tracker: https://github.com/ispamungkas/meta_model_transformer/issues
+
+workspace:
+  - model_parser
+  - meta_data
 
 environment:
   sdk: ^3.10.0-290.4.beta
@@ -22,6 +26,25 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^6.0.0
   build_runner: ^2.15.0
+  melos: ^7.0.0-dev.9
+
+dependency_overrides: 
+  analyzer: ">=7.4.0 <14.0.0"
+  build: ^4.0.6
+  source_gen: ^4.2.3
+  glob: ^2.1.3
+  build_runner: ^2.15.0
+  flutter_lints: ^6.0.0
+
+melos:
+  scripts:
+    generate:
+      run: dart run build_runner build --delete-conflicting-outputs
+      exec: 
+        concurrency: 4
+      package-filter:
+        dependsOn: build_runner
+  
 
 
 # For information on the generic Dart part of this file, see the
